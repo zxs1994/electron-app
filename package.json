@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "An Electron application with Vue",
   "main": "./out/main/index.js",
-  "author": "example.com",
+  "author": "朱旭升",
   "homepage": "https://www.electronjs.org",
   "scripts": {
     "format": "prettier --write .",
@@ -23,8 +23,7 @@
     "@electron-toolkit/utils": "^2.0.0",
     "ant-design-vue": "4.x",
     "axios": "^1.6.2",
-    "electron-updater": "^6.1.1",
-    "jsdom": "^23.0.1"
+    "electron-updater": "^6.1.1"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config": "^1.0.1",
