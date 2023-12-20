@@ -1,8 +1,8 @@
 {
   "name": "my-app",
   "productName": "洪泽水利水位感应系统",
-  "version": "1.0.0",
-  "description": "An Electron application with Vue",
+  "version": "1.0.2",
+  "description": "这是一个牛逼的系统",
   "main": "./out/main/index.js",
   "author": "朱旭升",
   "homepage": "https://www.electronjs.org",
@@ -13,7 +13,7 @@
     "dev": "electron-vite dev",
     "build": "electron-vite build",
     "postinstall": "electron-builder install-app-deps",
-    "build:win": "npm run build && electron-builder --win --config",
+    "build:win": "npm run build && electron-builder --win --ia32 --config",
     "build:mac": "npm run build && electron-builder --mac --config",
     "build:linux": "npm run build && electron-builder --linux --config"
   },
@@ -30,7 +30,7 @@
     "@rushstack/eslint-patch": "^1.3.3",
     "@vitejs/plugin-vue": "^4.3.1",
     "@vue/eslint-config-prettier": "^8.0.0",
-    "electron": "^25.6.0",
+    "electron": "21.4.4",
     "electron-builder": "^24.6.3",
     "electron-vite": "^1.0.27",
     "eslint": "^8.47.0",

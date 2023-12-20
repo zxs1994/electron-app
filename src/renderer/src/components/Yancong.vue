@@ -80,9 +80,10 @@ const props = defineProps(['waterColor', 'waterHeight'])
   .pillar {
     width: 30px;
     height: 100%;
-    border: 1px solid #ccc;
+    // border: 1px solid #ccc;
     display: flex;
     flex-direction: column-reverse;
+    background: #000;
     .water {
       // height: 200px;
       // background: yellow;
