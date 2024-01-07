@@ -102,12 +102,17 @@ function setWaterColor(num, type) {
       // console.log(numbers)
       if (num > numbers[0] && num <= numbers[1]) {
         const time = v.time
+        console.log(v)
         if (v.time === '全年') {
           return true
         } else {
           const months = time.split('-').map(v => parseFloat(v))
-          // console.log(months)
-          if (month >= months[0] && (month < months[1] || months[0] > months[1])) {
+          console.log(months)
+          if (month >= months[0]) {
+            if (month <= months[1] || months[0] > months[1]) {
+              return true
+            }
+          } else if (months[0] > months[1] && month <= months[1]) {
             return true
           }
         }

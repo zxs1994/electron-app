@@ -1,7 +1,7 @@
 {
   "name": "my-app",
   "productName": "洪泽水利水位感应系统",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "这是一个牛逼的系统",
   "main": "./out/main/index.js",
   "author": "朱旭升",
