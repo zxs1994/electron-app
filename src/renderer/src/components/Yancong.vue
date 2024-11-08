@@ -83,7 +83,7 @@ const props = defineProps(['waterColor', 'waterHeight'])
     // border: 1px solid #ccc;
     display: flex;
     flex-direction: column-reverse;
-    background: #000;
+    background: #000000c6;
     .water {
       // height: 200px;
       // background: yellow;
