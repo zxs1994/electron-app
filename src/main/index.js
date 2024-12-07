@@ -3,9 +3,50 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import axios from 'axios'
+const baseURL = 'https://jswater.jiangsu.gov.cn'
+// const puppeteer = require('puppeteer-extra')
+// const StealthPlugin = require('puppeteer-extra-plugin-stealth')
+// puppeteer.use(StealthPlugin())
+
+const Store = require('electron-store') // 用于存储重启次数
+const store = new Store()
+
+// async function fetchData(url) {
+//   const browser = await puppeteer.launch({
+//     headless: true // 设置为 false 可以看到浏览器执行过程
+//   })
+//   const page = await browser.newPage()
+//   await page.setUserAgent(
+//     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'
+//   )
+//   await page.evaluateOnNewDocument(() => {
+//     Object.defineProperty(navigator, 'webdriver', {
+//       get: () => undefined,
+//     })
+//   })
+//   // 访问目标网站
+//   const response = await page.goto(url, {
+//     waitUntil: 'networkidle2'
+//   })
+
+//   console.log('最终 URL:', response.url()) // 输出重定向后的 URL
+
+//   // // 等待特定元素出现（如页面完全加载后的内容）
+//   await page.waitForSelector('body')
+
+//   // // 获取页面内容
+//   const content = await page.content()
+//   // 执行页面上的 JavaScript 并提取数据
+//   // const data = await page.evaluate(() => {
+//   //   return document.documentElement.innerHTML // 返回页面 HTML 内容
+//   // })
+//   // 关闭浏览器
+//   await browser.close()
+//   return content
+// }
 
 const axiosInstance = axios.create({
-  baseURL: 'https://jswater.jiangsu.gov.cn'
+  baseURL,
 })
 
 axiosInstance.interceptors.response.use(
@@ -24,18 +65,48 @@ axiosInstance.interceptors.response.use(
 )
 
 let isRestarting = false // 重启标志位
+const MAX_RESTART_ATTEMPTS = 3 // 最大重启次数
+const RESTART_KEY = 'restartCount' // 存储重启次数的 key
+
+function getRestartCount() {
+  return store.get(RESTART_KEY, 0) // 默认值为 0
+}
+
+function incrementRestartCount() {
+  const count = getRestartCount() + 1
+  store.set(RESTART_KEY, count) // 更新重启次数
+}
+
+function resetRestartCount() {
+  store.delete(RESTART_KEY) // 删除重启次数
+}
 
 function restartApp() {
+  const restartCount = getRestartCount()
+
   if (isRestarting) return // 避免重复重启
+  if (restartCount >= MAX_RESTART_ATTEMPTS) {
+    console.error('已达到最大重启次数，停止重启')
+    return
+  }
+
   isRestarting = true
-  console.error('应用即将重启...')
-  app.relaunch()
+  incrementRestartCount() // 增加重启次数
+
+  console.error(`应用即将重启... 第 ${restartCount + 1} 次`)
+  app.relaunch() // 重新启动应用
   app.exit()
 }
 
 ipcMain.on('renderer-crashed', (event, error) => {
   console.error('接收到渲染进程崩溃信号:', error)
   restartApp()
+})
+
+// 监听重置重启次数请求
+ipcMain.on('reset-restart-count', () => {
+  resetRestartCount() // 重置重启次数
+  console.log('重启次数已重置')
 })
 
 // 捕获未处理的异常并重启应用
@@ -119,7 +190,7 @@ function createWindow() {
 async function getDayWaterMsg(url) {
   // console.log(url)
   const res = await axiosInstance(url)
-  // console.log(res.data)
+  // console.log(res)
   const str = res.data || ''
   // console.log(str)
   const text = (str.match(/(?<=\<meta\sname="Description"\scontent=").*(?="\>)/) || [])[0]
@@ -132,11 +203,12 @@ async function getDayWaterMsg(url) {
 }
 async function getData() {
   try {
-    const res = await axiosInstance('/col/col54071/index.html')
-    // console.log(res.data)
+    const res = await axiosInstance(baseURL + '/col/col54071/index.html')
+    // console.log(res)
     const str = res.data || ''
     const href = str.match(/(?<=\<a\starget="_blank"\shref=")\/art\/.*\.html/)[0]
-    const url = href
+    // console.log(href)
+    const url = baseURL + href
     const obj = await getDayWaterMsg(url)
     console.log(url, obj)
     return obj
@@ -146,7 +218,6 @@ async function getData() {
       errMsg: e.msg || '接口调用错误！'
     }
   }
-  
 }
 
 // This method will be called when Electron has finished

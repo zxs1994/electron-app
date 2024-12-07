@@ -23,7 +23,11 @@
     "@electron-toolkit/utils": "^2.0.0",
     "ant-design-vue": "4.x",
     "axios": "^1.6.2",
-    "electron-updater": "^6.1.1"
+    "electron-store": "8.1.0",
+    "electron-updater": "^6.1.1",
+    "puppeteer": "^23.10.1",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config": "^1.0.1",

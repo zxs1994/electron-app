@@ -131,6 +131,8 @@ function getData(type = '自动-网站') {
     if (v.errMsg) {
       message.error(v.errMsg)
       return
+    } else {
+      message.success(`水位 ${v.num} 米`)
     }
     waterLevelMsg.value = v
     getTime.value = dayjs().format('YYYY-MM-DD HH:mm:ss')

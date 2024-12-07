@@ -14,4 +14,8 @@ window.addEventListener('unhandledrejection', (event) => {
   require('electron').ipcRenderer.send('renderer-crashed', event.reason)
 })
 
+window.addEventListener('load', () => {
+  window.api.resetRestartCount() // 通知主进程重置重启次数
+})
+
 // console.log(window)
