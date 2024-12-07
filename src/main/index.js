@@ -15,7 +15,7 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     const msg = error?.response?.data?.message || error?.message || error
-    console.log(error, msg)
+    // console.log(msg)
     throw {
       ...error,
       msg
@@ -23,9 +23,36 @@ axiosInstance.interceptors.response.use(
   }
 )
 
+let isRestarting = false // 重启标志位
+
+function restartApp() {
+  if (isRestarting) return // 避免重复重启
+  isRestarting = true
+  console.error('应用即将重启...')
+  app.relaunch()
+  app.exit()
+}
+
+ipcMain.on('renderer-crashed', (event, error) => {
+  console.error('接收到渲染进程崩溃信号:', error)
+  restartApp()
+})
+
+// 捕获未处理的异常并重启应用
+process.on('uncaughtException', (error) => {
+  console.error('主进程发生未捕获的异常:', error)
+  restartApp()
+})
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('未处理的 Promise 拒绝:', reason)
+  restartApp()
+})
+
+let mainWindow
 function createWindow() {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1000,
     height: 1000,
     // frame: false,
@@ -42,6 +69,26 @@ function createWindow() {
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
+    }
+  })
+
+  // 监听渲染进程的退出或崩溃
+  mainWindow.webContents.on('render-process-gone', (event, details) => {
+    console.error('渲染进程已退出或崩溃:', details)
+
+    if (details.reason === 'crashed') {
+      console.log('检测到渲染进程崩溃，尝试重启窗口...')
+      restartApp()
+    }
+  })
+
+  // 监听子进程退出或崩溃
+  mainWindow.webContents.on('child-process-gone', (event, details) => {
+    console.error('子进程已退出:', details)
+
+    if (details.type === 'GPU' && details.reason === 'crashed') {
+      console.error('GPU 进程崩溃，尝试重启应用...')
+      restartApp()
     }
   })
 
@@ -84,15 +131,22 @@ async function getDayWaterMsg(url) {
   }
 }
 async function getData() {
-  const res = await axiosInstance('/col/col54071/index.html')
-  // console.log(res.data)
-  const str = res.data || ''
-  const href = str.match(/(?<=\<a\starget="_blank"\shref=")\/art\/.*\.html/)[0]
-  const url = href
-  // console.log(url)
-  const obj = await getDayWaterMsg(url)
-  console.log(obj)
-  return obj
+  try {
+    const res = await axiosInstance('/col/col54071/index.html')
+    // console.log(res.data)
+    const str = res.data || ''
+    const href = str.match(/(?<=\<a\starget="_blank"\shref=")\/art\/.*\.html/)[0]
+    const url = href
+    const obj = await getDayWaterMsg(url)
+    console.log(url, obj)
+    return obj
+  } catch (e) {
+    console.log('错误：', e)
+    return {
+      errMsg: e.msg || '接口调用错误！'
+    }
+  }
+  
 }
 
 // This method will be called when Electron has finished
@@ -109,7 +163,10 @@ app.whenReady().then(() => {
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
-
+  if (mainWindow) {
+    mainWindow.destroy()
+    mainWindow = null
+  }
   createWindow()
 
   app.on('activate', function () {

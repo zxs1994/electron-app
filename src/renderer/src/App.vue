@@ -1,6 +1,6 @@
 <script setup>
 import Yancong from './components/Yancong.vue'
-import { Table, Button, InputNumber, Form, FormItem, Descriptions, DescriptionsItem } from 'ant-design-vue'
+import { Table, Button, InputNumber, Form, FormItem, Descriptions, DescriptionsItem, message } from 'ant-design-vue'
 import { ref } from 'vue'
 import dayjs from 'dayjs'
 
@@ -126,8 +126,12 @@ function setWaterColor(num, type) {
 function getData(type = '自动-网站') {
   getLoading.value = true
   window.api.getData().then((v) => {
-    // console.log(v)
+    console.log(v)
     getLoading.value = false
+    if (v.errMsg) {
+      message.error(v.errMsg)
+      return
+    }
     waterLevelMsg.value = v
     getTime.value = dayjs().format('YYYY-MM-DD HH:mm:ss')
     getType.value = type
@@ -224,7 +228,7 @@ const onKeyup = () => {
           :pagination="false"
           size="small"
           style="width: 100%;">
-          <template #title>水柱颜色设置规则</template>
+          <template #title>灯柱颜色设置规则</template>
           <template #bodyCell="{column, value, record}">
             <template v-if="column.dataIndex === 'color'">
               <div :style="{background: value}">{{ record.colorTitle }}</div>
