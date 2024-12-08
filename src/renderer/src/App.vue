@@ -152,6 +152,7 @@ window.api.onTimedTask((value) => {
   if (theDay !== thatDay) {
     const theHour = new Date().getHours()
     if (theHour >= 8) {
+      console.log('getData')
       getData()
     }
   }

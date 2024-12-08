@@ -5,7 +5,6 @@ import { electronAPI } from '@electron-toolkit/preload'
 const api = {
   getData: () => ipcRenderer.invoke('getData'),
   onTimedTask: (cb) => ipcRenderer.on('timedTask', (e, v) => cb(v)),
-  resetRestartCount: () => ipcRenderer.send('reset-restart-count')
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
