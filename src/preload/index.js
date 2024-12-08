@@ -5,6 +5,7 @@ import { electronAPI } from '@electron-toolkit/preload'
 const api = {
   getData: () => ipcRenderer.invoke('getData'),
   onTimedTask: (cb) => ipcRenderer.on('timedTask', (e, v) => cb(v)),
+  restartApp: () => ipcRenderer.send('restart-app'), // 发送消息到主进程
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

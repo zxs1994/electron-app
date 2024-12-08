@@ -12,6 +12,13 @@ const axiosInstance = axios.create({
   baseURL,
 })
 
+
+ipcMain.on('restart-app', () => {
+  console.log('收到重启应用请求...')
+  app.relaunch() // 重新启动应用
+  app.exit()     // 退出当前应用
+})
+
 axiosInstance.interceptors.response.use(
   (res) => {
     // console.log(res)

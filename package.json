@@ -1,7 +1,7 @@
 {
   "name": "my-app",
   "productName": "洪泽水利水位感应系统",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "这是一个牛逼的系统",
   "main": "./out/main/index.js",
   "author": "朱旭升",
@@ -24,10 +24,7 @@
     "ant-design-vue": "4.x",
     "axios": "^1.6.2",
     "electron-store": "8.1.0",
-    "electron-updater": "^6.1.1",
-    "puppeteer": "^23.10.1",
-    "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.2"
+    "electron-updater": "^6.1.1"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config": "^1.0.1",

@@ -190,6 +190,10 @@ const onKeyup = () => {
   }
 }
 
+const restart = () => {
+  console.log('发送重启请求...')
+  window.api.restartApp()
+}
 </script>
 
 <template>
@@ -198,6 +202,7 @@ const onKeyup = () => {
       <Descriptions size="small" :column="2">
       <template #title>
         <Button @click="getData('手动-网站')" type="primary" :loading="getLoading">立即获取</Button>
+        <Button @click="restart">重启</Button>
       </template>
       <DescriptionsItem label="获取方式">{{ getType }}</DescriptionsItem>
       <DescriptionsItem label="获取时间">{{ getTime }}</DescriptionsItem>
