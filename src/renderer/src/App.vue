@@ -1,7 +1,7 @@
 <script setup>
 import Yancong from './components/Yancong.vue'
 import { Table, Button, InputNumber, Form, FormItem, Descriptions, DescriptionsItem, message } from 'ant-design-vue'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import dayjs from 'dayjs'
 
 const waterLevelMsg = ref('')
@@ -143,7 +143,10 @@ function getData(type = '自动-网站') {
     formRef.value.resetFields()
   })
 }
-getData()
+
+onMounted(() => {
+  getData()
+})
 
 window.api.onTimedTask((value) => {
   console.log(dayjs().format('YYYY-MM-DD HH:mm:ss'))
