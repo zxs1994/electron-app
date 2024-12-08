@@ -201,8 +201,10 @@ const restart = () => {
     <div style="width: 470px; margin-right: 100px;">
       <Descriptions size="small" :column="2">
       <template #title>
-        <Button @click="getData('手动-网站')" type="primary" :loading="getLoading">立即获取</Button>
-        <Button @click="restart">重启</Button>
+        <!-- <div style="display: flex; justify-content: space-between;"> -->
+          <Button @click="getData('手动-网站')" type="primary" :loading="getLoading">立即获取</Button>
+          <Button @click="restart" style="margin-left: 15px;">重启</Button>
+        <!-- </div> -->
       </template>
       <DescriptionsItem label="获取方式">{{ getType }}</DescriptionsItem>
       <DescriptionsItem label="获取时间">{{ getTime }}</DescriptionsItem>
